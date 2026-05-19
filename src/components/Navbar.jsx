@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
-import { Menu, X, Globe, ChevronDown, LogOut, User, LayoutDashboard, PlusCircle } from 'lucide-react'
+import { Menu, X, ChevronDown, LogOut, User, LayoutDashboard, PlusCircle } from 'lucide-react'
 import { gsap, ScrollTrigger } from '../lib/animations'
+import logoHorizontal from '../../Logo-assets/project_request_horizontal.png'
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth()
@@ -63,11 +64,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/" className="nav-logo flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center shadow-sm group-hover:bg-brand-700 transition-colors">
-              <Globe className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-gray-900 text-lg tracking-tight">Request</span>
+          <Link to="/" className="nav-logo flex items-center">
+            <img src={logoHorizontal} alt="Project Request" className="h-9 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
