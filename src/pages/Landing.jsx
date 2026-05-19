@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Calendar, Package, CheckCircle } from 'lucide-react'
+import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Package } from 'lucide-react'
 import { gsap, ScrollTrigger } from '../lib/animations'
 import HowItWorksScene from '../components/HowItWorksScene'
+import DestinationsMarquee from '../components/DestinationsMarquee'
 
 const HOW_IT_WORKS = [
   {
@@ -31,14 +32,6 @@ const HOW_IT_WORKS = [
   },
 ]
 
-const FEATURED_DESTINATIONS = [
-  { city: 'Edinburgh', country: 'Scotland', emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', trips: 4 },
-  { city: 'Tokyo',     country: 'Japan',    emoji: '🇯🇵', trips: 7 },
-  { city: 'Paris',     country: 'France',   emoji: '🇫🇷', trips: 6 },
-  { city: 'Florence',  country: 'Italy',    emoji: '🇮🇹', trips: 3 },
-  { city: 'Melbourne', country: 'Australia',emoji: '🇦🇺', trips: 2 },
-  { city: 'Mexico City', country: 'Mexico', emoji: '🇲🇽', trips: 5 },
-]
 
 const TESTIMONIALS = [
   {
@@ -244,7 +237,7 @@ export default function Landing() {
       </section>
 
       {/* Featured Destinations */}
-      <section className="dest-section py-20 bg-white">
+      <section className="dest-section py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="dest-heading flex items-end justify-between mb-10">
             <div>
@@ -255,19 +248,7 @@ export default function Landing() {
               See all trips <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {FEATURED_DESTINATIONS.map(dest => (
-              <Link
-                key={dest.city}
-                to={`/trips?destination=${encodeURIComponent(dest.country)}`}
-                className="dest-card card p-4 flex flex-col items-center gap-2 text-center hover:border-brand-200"
-              >
-                <span className="text-3xl">{dest.emoji}</span>
-                <p className="font-semibold text-gray-900 text-sm">{dest.city}</p>
-                <p className="text-gray-400 text-xs">{dest.trips} active trips</p>
-              </Link>
-            ))}
-          </div>
+          <DestinationsMarquee />
         </div>
       </section>
 
