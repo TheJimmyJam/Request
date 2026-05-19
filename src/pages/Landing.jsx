@@ -193,7 +193,7 @@ export default function Landing() {
           </div>
 
           {/* Animated scene */}
-          <div className="how-step bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 mb-12 border border-indigo-100">
+          <div className="how-step bg-white rounded-2xl p-6 mb-12 border border-indigo-100">
             <HowItWorksScene />
           </div>
 

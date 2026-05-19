@@ -79,6 +79,7 @@ export default function HowItWorksScene() {
         src={charactersImg}
         alt="Pierre and Sophie using Request"
         className="w-full h-auto relative z-10"
+        style={{ mixBlendMode: 'multiply' }}
         draggable={false}
       />
 
