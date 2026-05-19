@@ -59,35 +59,35 @@ export default function HowItWorksScene() {
       gsap.set('.sc-match',        { scale: 0.85 })
       gsap.set('.sc-plane',        { x: 0 })
 
-      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 })
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 })
 
-      // Beat 1 — Pierre's bubble (posts his NYC trip)
-      tl.to('.sb-pierre', { opacity: 1, y: 0, duration: 0.45, ease: 'back.out(2)' }, 0.4)
+      // Beat 1 — Pierre's bubble appears and stays visible for reading (0s → 5s)
+      tl.to('.sb-pierre', { opacity: 1, y: 0, duration: 0.5, ease: 'back.out(2)' }, 0.5)
 
-      // Beat 2 — Platform card slides in
-      tl.to('.sc-platform', { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: 'back.out(1.8)' }, 1.1)
+      // Beat 2 — Platform card slides in while Pierre bubble still showing (2.5s)
+      tl.to('.sc-platform', { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.8)' }, 2.5)
 
-      // Beat 3 — Pierre bubble fades, plane flies left→right
-      tl.to('.sb-pierre', { opacity: 0, duration: 0.2 }, 1.8)
-      tl.to('.sc-plane',  { opacity: 1, duration: 0.15 }, 2.0)
-      tl.to('.sc-plane',  { x: '420%', duration: 1.5, ease: 'power1.inOut' }, 2.0)
-      tl.to('.sc-plane',  { opacity: 0, duration: 0.2 }, 3.4)
+      // Beat 3 — Pierre bubble fades, plane flies (5s)
+      tl.to('.sb-pierre', { opacity: 0, duration: 0.4 }, 5.0)
+      tl.to('.sc-plane',  { opacity: 1, duration: 0.2 }, 5.2)
+      tl.to('.sc-plane',  { x: '420%', duration: 2.0, ease: 'power1.inOut' }, 5.2)
+      tl.to('.sc-plane',  { opacity: 0, duration: 0.3 }, 7.0)
 
-      // Beat 4 — Sophie's bubble (wants Levi's from USA)
-      tl.to('.sb-sophie', { opacity: 1, y: 0, duration: 0.45, ease: 'back.out(2)' }, 2.3)
+      // Beat 4 — Sophie's bubble appears (5.8s) and stays for reading
+      tl.to('.sb-sophie', { opacity: 1, y: 0, duration: 0.5, ease: 'back.out(2)' }, 5.8)
 
-      // Beat 5 — Match glow, Sophie bubble fades
-      tl.to('.sb-sophie', { opacity: 0, duration: 0.2 }, 3.6)
-      tl.to('.sc-match',  { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.5)' }, 3.7)
-      tl.to('.sc-match',  { scale: 1.06, duration: 0.35, yoyo: true, repeat: 3, ease: 'power1.inOut' }, 4.1)
+      // Beat 5 — Match glow (9.5s), Sophie bubble fades
+      tl.to('.sb-sophie', { opacity: 0, duration: 0.4 }, 9.5)
+      tl.to('.sc-match',  { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.5)' }, 9.6)
+      tl.to('.sc-match',  { scale: 1.06, duration: 0.4, yoyo: true, repeat: 3, ease: 'power1.inOut' }, 10.1)
 
-      // Beat 6 — Notifications pop
-      tl.to('.sc-notif-pierre', { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 4.6)
-      tl.to('.sc-notif-sophie', { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(2)' }, 4.9)
+      // Beat 6 — Notifications pop and stay readable (11s)
+      tl.to('.sc-notif-pierre', { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(2)' }, 11.0)
+      tl.to('.sc-notif-sophie', { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'back.out(2)' }, 11.6)
 
-      // Hold, then fade out for loop
+      // Hold everything visible, then fade out for loop (16s)
       tl.to(['.sc-platform', '.sc-match', '.sc-notif-pierre', '.sc-notif-sophie'],
-        { opacity: 0, duration: 0.5, stagger: 0.06 }, 7.5)
+        { opacity: 0, duration: 0.6, stagger: 0.08 }, 16.0)
       tl.set(['.sb-pierre', '.sb-sophie'], { y: 10 })
       tl.set(['.sc-notif-pierre', '.sc-notif-sophie'], { y: 8, scale: 0.9 })
       tl.set('.sc-platform', { y: -10, scale: 0.9 })
