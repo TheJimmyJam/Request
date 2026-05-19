@@ -3,12 +3,43 @@
  * Animated explainer using the real Pierre & Sophie illustration.
  * HTML overlays + GSAP timeline — loops automatically.
  */
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from '../lib/animations'
-import charactersImg from '../../Logo-assets/project request characters.png'
+import charactersImg from '../../Logo-assets/request transparent.png'
 
 export default function HowItWorksScene() {
-  const rootRef = useRef(null)
+  const rootRef    = useRef(null)
+  const imgRef     = useRef(null)
+  const [processedSrc, setProcessedSrc] = useState(null)
+
+  // Strip near-white / checkerboard pixels via canvas
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width  = img.width
+      canvas.height = img.height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0)
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      const d = imageData.data
+
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i+1], b = d[i+2]
+        // Pixels that are near-white (the checker pattern)
+        if (r > 195 && g > 195 && b > 195) {
+          // Smooth fade: fully transparent at white, opaque at threshold
+          const brightness = (r + g + b) / 3
+          d[i+3] = Math.round(Math.max(0, (255 - brightness) * 2.2))
+        }
+      }
+
+      ctx.putImageData(imageData, 0, 0)
+      setProcessedSrc(canvas.toDataURL('image/png'))
+    }
+    img.src = charactersImg
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -75,13 +106,15 @@ export default function HowItWorksScene() {
       style={{ minHeight: 320 }}
     >
       {/* ── Characters image ─────────────────────────────────────────── */}
-      <img
-        src={charactersImg}
-        alt="Pierre and Sophie using Request"
-        className="w-full h-auto relative z-10"
-        style={{ mixBlendMode: 'multiply' }}
-        draggable={false}
-      />
+      {processedSrc && (
+        <img
+          ref={imgRef}
+          src={processedSrc}
+          alt="Pierre and Sophie using Request"
+          className="w-full h-auto relative z-10"
+          draggable={false}
+        />
+      )}
 
       {/* ── Plane (top, flies left → right) ─────────────────────────── */}
       <div className="sc-plane absolute z-20 text-2xl" style={{ top: '4%', left: '8%' }}>
