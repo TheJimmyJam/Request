@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Menu, X, ChevronDown, LogOut, User, LayoutDashboard, PlusCircle } from 'lucide-react'
 import { gsap, ScrollTrigger } from '../lib/animations'
-import logoHorizontal from '../../Logo-assets/project_request_horizontal.png'
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth()
@@ -65,7 +64,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link to="/" className="nav-logo flex items-center">
-            <img src={logoHorizontal} alt="Project Request" className="h-9 w-auto" />
+            <img src="/logo-horizontal.png" alt="Project Request" className="h-9 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
