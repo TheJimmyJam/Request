@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import TripCard from '../components/TripCard'
 import { Search, MapPin, Calendar, SlidersHorizontal, PlusCircle, Loader2 } from 'lucide-react'
+import { gsap } from '../lib/animations'
 
 export default function BrowseTrips() {
   const { user } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
+  const rootRef = useRef(null)
+  const hasAnimated = useRef(false)
 
   const [trips, setTrips]         = useState([])
   const [loading, setLoading]     = useState(true)
@@ -18,6 +21,30 @@ export default function BrowseTrips() {
   useEffect(() => {
     fetchTrips()
   }, [search, dateFilter, sortBy])
+
+  // Page header entrance (once)
+  useEffect(() => {
+    if (hasAnimated.current) return
+    hasAnimated.current = true
+
+    const ctx = gsap.context(() => {
+      gsap.from('.browse-header', { y: 28, opacity: 0, duration: 0.6, ease: 'power2.out' })
+      gsap.from('.browse-filters', { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.15 })
+    }, rootRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  // Animate cards when trips load or filter changes
+  useEffect(() => {
+    if (loading || trips.length === 0) return
+    const ctx = gsap.context(() => {
+      gsap.from('.trip-card-item', {
+        y: 28, opacity: 0, duration: 0.5, ease: 'power2.out', stagger: 0.07,
+      })
+    }, rootRef)
+    return () => ctx.revert()
+  }, [loading, trips])
 
   async function fetchTrips() {
     setLoading(true)
@@ -49,9 +76,9 @@ export default function BrowseTrips() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div ref={rootRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+      <div className="browse-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Browse Trips</h1>
           <p className="text-gray-500 mt-1">Find a traveler heading where you need and make a request.</p>
@@ -65,9 +92,8 @@ export default function BrowseTrips() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-8">
+      <div className="browse-filters bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-8">
         <div className="flex flex-col sm:flex-row gap-3">
-          {/* Search */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -79,7 +105,6 @@ export default function BrowseTrips() {
             />
           </div>
 
-          {/* Date filter */}
           <div className="relative">
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <input
@@ -91,7 +116,6 @@ export default function BrowseTrips() {
             />
           </div>
 
-          {/* Sort */}
           <div className="relative">
             <SlidersHorizontal className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <select
@@ -130,7 +154,9 @@ export default function BrowseTrips() {
           <p className="text-sm text-gray-400 mb-4">{trips.length} trip{trips.length !== 1 ? 's' : ''} found</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {trips.map(trip => (
-              <TripCard key={trip.id} trip={trip} />
+              <div key={trip.id} className="trip-card-item">
+                <TripCard trip={trip} />
+              </div>
             ))}
           </div>
         </>

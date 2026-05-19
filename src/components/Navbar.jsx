@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Menu, X, Globe, ChevronDown, LogOut, User, LayoutDashboard, PlusCircle } from 'lucide-react'
+import { gsap, ScrollTrigger } from '../lib/animations'
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth()
@@ -9,6 +10,7 @@ export default function Navbar() {
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const navRef = useRef(null)
 
   const isActive = (path) => location.pathname === path
 
@@ -17,13 +19,51 @@ export default function Navbar() {
     navigate('/')
   }
 
+  // Entrance animation + scroll-shadow effect
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.nav-logo', {
+        x: -20, opacity: 0, duration: 0.55, ease: 'power2.out', delay: 0.05,
+      })
+      gsap.from('.nav-link', {
+        y: -12, opacity: 0, duration: 0.45, ease: 'power2.out', stagger: 0.08, delay: 0.1,
+      })
+      gsap.from('.nav-auth-item', {
+        y: -12, opacity: 0, duration: 0.45, ease: 'power2.out', stagger: 0.1, delay: 0.2,
+      })
+    }, navRef)
+
+    // Scroll: intensify shadow on scroll
+    ScrollTrigger.create({
+      start: 'top -60',
+      onToggle: (self) => {
+        gsap.to(navRef.current, {
+          boxShadow: self.isActive
+            ? '0 4px 24px rgba(0,0,0,0.10)'
+            : '0 1px 2px rgba(0,0,0,0.04)',
+          duration: 0.35,
+          ease: 'power1.inOut',
+        })
+      },
+    })
+
+    return () => ctx.revert()
+  }, [])
+
+  // Re-run entrance on route change (soft nav)
+  useEffect(() => {
+    gsap.from('.nav-link', {
+      opacity: 0, duration: 0.3, ease: 'power1.out', stagger: 0.06,
+    })
+  }, [location.pathname])
+
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
+    <nav ref={navRef} className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
+          <Link to="/" className="nav-logo flex items-center gap-2.5 group">
             <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center shadow-sm group-hover:bg-brand-700 transition-colors">
               <Globe className="w-4 h-4 text-white" />
             </div>
@@ -34,7 +74,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             <Link
               to="/trips"
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`nav-link px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 isActive('/trips') ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
@@ -43,7 +83,7 @@ export default function Navbar() {
             {user && (
               <Link
                 to="/dashboard"
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`nav-link px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive('/dashboard') ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                 }`}
               >
@@ -58,13 +98,13 @@ export default function Navbar() {
               <>
                 <Link
                   to="/trips/new"
-                  className="btn-primary text-sm py-2 px-4"
+                  className="nav-auth-item btn-primary text-sm py-2 px-4"
                 >
                   <PlusCircle className="w-4 h-4" />
                   Post a Trip
                 </Link>
                 {/* User menu */}
-                <div className="relative">
+                <div className="nav-auth-item relative">
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
@@ -118,8 +158,8 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/auth" className="btn-ghost">Sign In</Link>
-                <Link to="/auth?tab=signup" className="btn-primary text-sm py-2 px-4">Get Started</Link>
+                <Link to="/auth" className="nav-auth-item btn-ghost">Sign In</Link>
+                <Link to="/auth?tab=signup" className="nav-auth-item btn-primary text-sm py-2 px-4">Get Started</Link>
               </>
             )}
           </div>

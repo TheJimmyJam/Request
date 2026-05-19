@@ -1,5 +1,8 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Calendar, Package, CheckCircle } from 'lucide-react'
+import { gsap, ScrollTrigger } from '../lib/animations'
+import HowItWorksScene from '../components/HowItWorksScene'
 
 const HOW_IT_WORKS = [
   {
@@ -59,36 +62,106 @@ const TESTIMONIALS = [
 ]
 
 export default function Landing() {
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+
+      // ── Hero entrance timeline ──────────────────────────────────────────
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      tl.from('.hero-badge',   { y: -24, opacity: 0, duration: 0.55 })
+        .from('.hero-heading', { y: 60,  opacity: 0, duration: 0.9 },  '-=0.2')
+        .from('.hero-sub',     { y: 40,  opacity: 0, duration: 0.7 },  '-=0.55')
+        .from('.hero-cta-btn', { y: 28,  opacity: 0, duration: 0.55, stagger: 0.12 }, '-=0.45')
+        .from('.hero-stat',    { y: 20,  opacity: 0, duration: 0.5,  stagger: 0.1  }, '-=0.35')
+
+      // ── Floating orbs subtle parallax ──────────────────────────────────
+      gsap.to('.hero-orb-top', {
+        y: -60, ease: 'none',
+        scrollTrigger: { trigger: '.hero-section', scrub: 1.5 }
+      })
+      gsap.to('.hero-orb-bot', {
+        y: 60, ease: 'none',
+        scrollTrigger: { trigger: '.hero-section', scrub: 1.5 }
+      })
+
+      // ── How It Works ────────────────────────────────────────────────────
+      gsap.from('.how-heading', {
+        y: 30, opacity: 0, duration: 0.7, ease: 'power2.out',
+        scrollTrigger: { trigger: '.how-section', start: 'top 82%', once: true },
+      })
+      gsap.from('.how-step', {
+        y: 45, opacity: 0, duration: 0.65, ease: 'power2.out', stagger: 0.13,
+        scrollTrigger: { trigger: '.how-section', start: 'top 78%', once: true },
+      })
+
+      // ── Fee Explainer ───────────────────────────────────────────────────
+      gsap.from('.fee-card', {
+        y: 40, opacity: 0, duration: 0.7, ease: 'power2.out',
+        scrollTrigger: { trigger: '.fee-section', start: 'top 82%', once: true },
+      })
+
+      // ── Destinations ────────────────────────────────────────────────────
+      gsap.from('.dest-heading', {
+        y: 30, opacity: 0, duration: 0.6, ease: 'power2.out',
+        scrollTrigger: { trigger: '.dest-section', start: 'top 82%', once: true },
+      })
+      gsap.from('.dest-card', {
+        y: 30, opacity: 0, scale: 0.94, duration: 0.5, ease: 'back.out(1.4)', stagger: 0.07,
+        scrollTrigger: { trigger: '.dest-section', start: 'top 78%', once: true },
+      })
+
+      // ── Testimonials ────────────────────────────────────────────────────
+      gsap.from('.testimonials-heading', {
+        y: 30, opacity: 0, duration: 0.6, ease: 'power2.out',
+        scrollTrigger: { trigger: '.testimonials-section', start: 'top 82%', once: true },
+      })
+      gsap.from('.testimonial-card', {
+        y: 40, opacity: 0, duration: 0.65, ease: 'power2.out', stagger: 0.14,
+        scrollTrigger: { trigger: '.testimonials-section', start: 'top 78%', once: true },
+      })
+
+      // ── CTA ─────────────────────────────────────────────────────────────
+      gsap.from('.cta-content > *', {
+        y: 28, opacity: 0, duration: 0.6, ease: 'power2.out', stagger: 0.12,
+        scrollTrigger: { trigger: '.cta-section', start: 'top 82%', once: true },
+      })
+
+    }, rootRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <div className="overflow-hidden">
+    <div ref={rootRef} className="overflow-hidden">
+
       {/* Hero */}
-      <section className="relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-700 rounded-full opacity-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold-500 rounded-full opacity-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+      <section className="hero-section relative bg-gradient-to-br from-brand-950 via-brand-900 to-brand-800 text-white overflow-hidden">
+        <div className="hero-orb-top absolute top-0 right-0 w-[600px] h-[600px] bg-brand-700 rounded-full opacity-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+        <div className="hero-orb-bot absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold-500 rounded-full opacity-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-medium mb-6">
+            <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-medium mb-6">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               Live Trips Available Now
             </div>
-            <h1 className="text-5xl sm:text-6xl font-extrabold leading-tight mb-6">
+            <h1 className="hero-heading text-5xl sm:text-6xl font-extrabold leading-tight mb-6">
               The Platform to{' '}
               <span className="text-gold-400">Request Anything</span>{' '}
               from Anywhere
             </h1>
-            <p className="text-xl text-brand-200 mb-10 max-w-2xl leading-relaxed">
+            <p className="hero-sub text-xl text-brand-200 mb-10 max-w-2xl leading-relaxed">
               Connect with travelers heading to your dream destination and ask them to bring back
               anything — rare spirits, artisan goods, limited editions. Skip the import fees.
               Get the real thing.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/trips" className="btn-primary bg-gold-500 hover:bg-gold-600 text-gray-900 text-base px-7 py-3.5 font-bold">
+              <Link to="/trips" className="hero-cta-btn btn-primary bg-gold-500 hover:bg-gold-600 text-gray-900 text-base px-7 py-3.5 font-bold">
                 Browse Trips
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <Link to="/auth?tab=signup" className="btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/20 text-base px-7 py-3.5">
+              <Link to="/auth?tab=signup" className="hero-cta-btn btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/20 text-base px-7 py-3.5">
                 Post Your Trip
               </Link>
             </div>
@@ -99,7 +172,7 @@ export default function Landing() {
                 ['2,400+', 'Items Delivered'],
                 ['98%', 'Satisfaction Rate'],
               ].map(([num, label]) => (
-                <div key={label}>
+                <div key={label} className="hero-stat">
                   <p className="text-3xl font-extrabold text-white">{num}</p>
                   <p className="text-brand-300 text-sm">{label}</p>
                 </div>
@@ -110,17 +183,24 @@ export default function Landing() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-white">
+      <section className="how-section py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <div className="how-heading text-center mb-10">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How Request Works</h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Four simple steps between you and that hard-to-find item from across the globe.
+              Pierre is heading to NYC and Sophie needs Levi's. Watch the magic happen.
             </p>
           </div>
+
+          {/* Animated scene */}
+          <div className="how-step bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 mb-12 border border-indigo-100">
+            <HowItWorksScene />
+          </div>
+
+          {/* Steps below scene */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {HOW_IT_WORKS.map((step, i) => (
-              <div key={step.title} className="flex flex-col items-start gap-4">
+              <div key={step.title} className="how-step flex flex-col items-start gap-4">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${step.color}`}>
                   <step.icon className="w-6 h-6" />
                 </div>
@@ -136,9 +216,9 @@ export default function Landing() {
       </section>
 
       {/* Fee Explainer */}
-      <section className="py-16 bg-gray-50 border-y border-gray-100">
+      <section className="fee-section py-16 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+          <div className="fee-card max-w-2xl mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
             <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Simple, Transparent Fees</h3>
             <div className="space-y-4">
               {[
@@ -164,9 +244,9 @@ export default function Landing() {
       </section>
 
       {/* Featured Destinations */}
-      <section className="py-20 bg-white">
+      <section className="dest-section py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-10">
+          <div className="dest-heading flex items-end justify-between mb-10">
             <div>
               <h2 className="text-3xl font-bold text-gray-900">Popular Destinations</h2>
               <p className="text-gray-500 mt-1">Travelers heading everywhere. Find your request.</p>
@@ -180,7 +260,7 @@ export default function Landing() {
               <Link
                 key={dest.city}
                 to={`/trips?destination=${encodeURIComponent(dest.country)}`}
-                className="card p-4 flex flex-col items-center gap-2 text-center hover:border-brand-200"
+                className="dest-card card p-4 flex flex-col items-center gap-2 text-center hover:border-brand-200"
               >
                 <span className="text-3xl">{dest.emoji}</span>
                 <p className="font-semibold text-gray-900 text-sm">{dest.city}</p>
@@ -192,12 +272,12 @@ export default function Landing() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-gray-50">
+      <section className="testimonials-section py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">What People Are Saying</h2>
+          <h2 className="testimonials-heading text-3xl font-bold text-gray-900 text-center mb-12">What People Are Saying</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TESTIMONIALS.map(t => (
-              <div key={t.name} className="card p-6">
+              <div key={t.name} className="testimonial-card card p-6">
                 <div className="flex gap-0.5 mb-4">
                   {Array.from({ length: t.rating }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-gold-400 text-gold-400" />
@@ -217,22 +297,25 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-brand-950 text-white">
+      <section className="cta-section py-20 bg-brand-950 text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-extrabold mb-4">Ready to Request Anything?</h2>
-          <p className="text-brand-300 text-lg mb-8">
-            Join thousands of travelers and shoppers connecting across the globe.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/auth?tab=signup" className="btn-primary bg-gold-500 hover:bg-gold-600 text-gray-900 font-bold text-base px-8 py-3.5">
-              Create Free Account
-            </Link>
-            <Link to="/trips" className="btn-secondary bg-transparent border-white/20 text-white hover:bg-white/10 text-base px-8 py-3.5">
-              Browse Active Trips
-            </Link>
+          <div className="cta-content flex flex-col items-center gap-6">
+            <h2 className="text-4xl font-extrabold">Ready to Request Anything?</h2>
+            <p className="text-brand-300 text-lg">
+              Join thousands of travelers and shoppers connecting across the globe.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/auth?tab=signup" className="btn-primary bg-gold-500 hover:bg-gold-600 text-gray-900 font-bold text-base px-8 py-3.5">
+                Create Free Account
+              </Link>
+              <Link to="/trips" className="btn-secondary bg-transparent border-white/20 text-white hover:bg-white/10 text-base px-8 py-3.5">
+                Browse Active Trips
+              </Link>
+            </div>
           </div>
         </div>
       </section>
+
     </div>
   )
 }

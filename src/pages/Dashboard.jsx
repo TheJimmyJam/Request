@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import TripCard from '../components/TripCard'
 import { PlusCircle, Package, Globe, Loader2, InboxIcon } from 'lucide-react'
 import { format } from 'date-fns'
+import { gsap } from '../lib/animations'
 
 const STATUS_COLORS = {
   pending:   'status-pending',
@@ -22,10 +23,38 @@ export default function Dashboard() {
   const [myTrips, setMyTrips]   = useState([])
   const [myRequests, setMyRequests] = useState([])
   const [loading, setLoading]   = useState(true)
+  const rootRef = useRef(null)
+  const hasAnimated = useRef(false)
 
   useEffect(() => {
     fetchAll()
   }, [user])
+
+  // Page entrance
+  useEffect(() => {
+    if (hasAnimated.current) return
+    hasAnimated.current = true
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+      tl.from('.dash-header', { y: 30, opacity: 0, duration: 0.6 })
+        .from('.dash-stat-card', { y: 24, opacity: 0, duration: 0.5, stagger: 0.1 }, '-=0.3')
+        .from('.dash-tabs', { y: 16, opacity: 0, duration: 0.4 }, '-=0.2')
+    }, rootRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  // Animate content area when it loads or tab changes
+  useEffect(() => {
+    if (loading) return
+    const ctx = gsap.context(() => {
+      gsap.from('.dash-content-item', {
+        y: 20, opacity: 0, duration: 0.45, ease: 'power2.out', stagger: 0.08,
+      })
+    }, rootRef)
+    return () => ctx.revert()
+  }, [loading, tab])
 
   async function fetchAll() {
     setLoading(true)
@@ -60,9 +89,9 @@ export default function Dashboard() {
   const acceptedCount = myRequests.filter(r => r.status === 'accepted').length
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div ref={rootRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+      <div className="dash-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome back, {profile?.full_name?.split(' ')[0] || 'there'}
@@ -83,7 +112,7 @@ export default function Dashboard() {
           { label: 'Active Requests',  val: acceptedCount,                                        icon: Package,  color: 'text-green-600 bg-green-50' },
           { label: 'Completed',        val: myRequests.filter(r => r.status === 'completed').length, icon: Package, color: 'text-purple-600 bg-purple-50' },
         ].map(stat => (
-          <div key={stat.label} className="card p-4">
+          <div key={stat.label} className="dash-stat-card card p-4">
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-2 ${stat.color}`}>
               <stat.icon className="w-5 h-5" />
             </div>
@@ -94,7 +123,7 @@ export default function Dashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex rounded-lg bg-gray-100 p-1 w-fit mb-6">
+      <div className="dash-tabs flex rounded-lg bg-gray-100 p-1 w-fit mb-6">
         {[['my-trips', Globe, 'My Trips'], ['my-requests', Package, 'My Requests']].map(([val, Icon, label]) => (
           <button
             key={val}
@@ -115,7 +144,7 @@ export default function Dashboard() {
       ) : tab === 'my-trips' ? (
         <div>
           {myTrips.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-xl border border-gray-100">
+            <div className="dash-content-item text-center py-16 bg-white rounded-xl border border-gray-100">
               <Globe className="w-12 h-12 text-gray-200 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-700 mb-2">No trips yet</h3>
               <p className="text-gray-400 mb-5">Post your first trip and start receiving requests.</p>
@@ -123,14 +152,14 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {myTrips.map(trip => <TripCard key={trip.id} trip={trip} />)}
+              {myTrips.map(trip => <TripCard key={trip.id} trip={trip} className="dash-content-item" />)}
             </div>
           )}
         </div>
       ) : (
         <div>
           {myRequests.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-xl border border-gray-100">
+            <div className="dash-content-item text-center py-16 bg-white rounded-xl border border-gray-100">
               <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-700 mb-2">No requests yet</h3>
               <p className="text-gray-400 mb-5">Browse active trips and make your first request.</p>
@@ -139,7 +168,7 @@ export default function Dashboard() {
           ) : (
             <div className="space-y-4">
               {myRequests.map(req => (
-                <div key={req.id} className="card p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div key={req.id} className="dash-content-item card p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={STATUS_COLORS[req.status] || 'badge bg-gray-50 text-gray-500'}>

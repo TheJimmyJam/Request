@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -9,6 +9,7 @@ import {
   Package, DollarSign, FileText, ExternalLink, CheckCircle, XCircle, AlertCircle
 } from 'lucide-react'
 import { format, parseISO, differenceInDays } from 'date-fns'
+import { gsap } from '../lib/animations'
 
 const STATUS_COLORS = {
   pending:   'status-pending',
@@ -40,6 +41,8 @@ export default function TripDetail() {
     notes: '',
   })
 
+  const rootRef = useRef(null)
+
   const isOwner     = user && trip && user.id === trip.traveler_id
   const hasRequested = requests.some(r => r.requester_id === user?.id)
   const spotsLeft   = trip ? trip.max_requests - requests.filter(r => r.status !== 'declined').length : 0
@@ -48,6 +51,18 @@ export default function TripDetail() {
     fetchTrip()
     fetchRequests()
   }, [id])
+
+  // Page entrance after trip loads
+  useEffect(() => {
+    if (!trip) return
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+      tl.from('.detail-back',    { x: -16, opacity: 0, duration: 0.4 })
+        .from('.detail-main > *', { y: 30, opacity: 0, duration: 0.55, stagger: 0.12 }, '-=0.2')
+        .from('.detail-sidebar > *', { x: 24, opacity: 0, duration: 0.5, stagger: 0.1 }, '-=0.5')
+    }, rootRef)
+    return () => ctx.revert()
+  }, [trip])
 
   async function fetchTrip() {
     const { data } = await supabase
@@ -143,14 +158,14 @@ export default function TripDetail() {
   const daysUntil = differenceInDays(parseISO(trip.start_date), new Date())
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6">
+    <div ref={rootRef} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <button onClick={() => navigate(-1)} className="detail-back flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6">
         <ArrowLeft className="w-4 h-4" /> Back to Trips
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="detail-main lg:col-span-2 space-y-6">
           {/* Trip header */}
           <div className="card p-6">
             <div className="flex items-start justify-between gap-4 mb-4">
@@ -424,7 +439,7 @@ export default function TripDetail() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-5">
+        <div className="detail-sidebar space-y-5">
           {/* Traveler card */}
           <div className="card p-5">
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Traveler</h3>

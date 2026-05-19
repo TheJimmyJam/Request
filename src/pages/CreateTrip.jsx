@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
 import { MapPin, Calendar, FileText, Users, ArrowLeft, Loader2 } from 'lucide-react'
+import { gsap } from '../lib/animations'
 
 export default function CreateTrip() {
   const { user } = useAuth()
@@ -19,6 +20,17 @@ export default function CreateTrip() {
     max_requests: 5,
   })
   const [loading, setLoading] = useState(false)
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+      tl.from('.create-back',   { x: -16, opacity: 0, duration: 0.4 })
+        .from('.create-header', { y: 24, opacity: 0, duration: 0.55 }, '-=0.2')
+        .from('.create-form',   { y: 30, opacity: 0, duration: 0.6 }, '-=0.35')
+    }, rootRef)
+    return () => ctx.revert()
+  }, [])
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -60,20 +72,20 @@ export default function CreateTrip() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+    <div ref={rootRef} className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6"
+        className="create-back flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-6"
       >
         <ArrowLeft className="w-4 h-4" /> Back
       </button>
 
-      <div className="mb-8">
+      <div className="create-header mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Post a Trip</h1>
         <p className="text-gray-500 mt-1">Let others know where you're going and accept item requests.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="create-form card p-6 space-y-5">
         {/* Destination row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">

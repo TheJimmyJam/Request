@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import TripCard from '../components/TripCard'
 import toast from 'react-hot-toast'
 import { User, MapPin, Edit2, Save, X, Star, Globe, Loader2 } from 'lucide-react'
+import { gsap } from '../lib/animations'
 
 export default function Profile() {
   const { id }        = useParams()
@@ -22,6 +23,7 @@ export default function Profile() {
   const [saving, setSaving]           = useState(false)
 
   const [editForm, setEditForm] = useState({ full_name: '', bio: '', location: '' })
+  const rootRef = useRef(null)
 
   useEffect(() => {
     if (!targetId) { navigate('/auth'); return }
@@ -29,6 +31,17 @@ export default function Profile() {
     fetchTrips()
     fetchReviews()
   }, [targetId])
+
+  // Entrance when profile loads
+  useEffect(() => {
+    if (!profileData) return
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+      tl.from('.profile-sidebar > *', { x: -24, opacity: 0, duration: 0.55, stagger: 0.12 })
+        .from('.profile-main > *',    { y: 28,  opacity: 0, duration: 0.55, stagger: 0.1  }, '-=0.4')
+    }, rootRef)
+    return () => ctx.revert()
+  }, [profileData])
 
   useEffect(() => {
     if (profileData) {
@@ -101,10 +114,10 @@ export default function Profile() {
   )
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div ref={rootRef} className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left sidebar */}
-        <div className="space-y-5">
+        <div className="profile-sidebar space-y-5">
           <div className="card p-6 text-center">
             {profileData.avatar_url ? (
               <img src={profileData.avatar_url} alt="" className="w-20 h-20 rounded-full object-cover mx-auto mb-3" />
@@ -202,7 +215,7 @@ export default function Profile() {
         </div>
 
         {/* Main content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="profile-main lg:col-span-2 space-y-6">
           {/* Active trips */}
           <div>
             <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
