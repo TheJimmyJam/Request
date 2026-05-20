@@ -26,10 +26,19 @@ export default function Profile() {
   const rootRef = useRef(null)
 
   useEffect(() => {
-    if (!targetId) { navigate('/auth'); return }
-    fetchProfile()
-    fetchTrips()
-    fetchReviews()
+    if (!targetId) return  // wait until user resolves from AuthContext
+
+    // Hard failsafe — never trap user on the spinner
+    const failsafe = setTimeout(() => setLoading(false), 6000)
+
+    // Run all three fetches in parallel; release the spinner once profile resolves
+    Promise.allSettled([fetchProfile(), fetchTrips(), fetchReviews()])
+      .finally(() => {
+        clearTimeout(failsafe)
+        setLoading(false)
+      })
+
+    return () => clearTimeout(failsafe)
   }, [targetId])
 
   // Entrance when profile loads
@@ -54,34 +63,51 @@ export default function Profile() {
   }, [profileData])
 
   async function fetchProfile() {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', targetId)
-      .single()
-    setProfileData(data)
-    setLoading(false)
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', targetId)
+        .maybeSingle()
+      if (error) console.warn('[profile] fetchProfile error:', error.message)
+      setProfileData(data ?? null)
+    } catch (err) {
+      console.warn('[profile] fetchProfile threw:', err)
+      setProfileData(null)
+    }
   }
 
   async function fetchTrips() {
-    const { data } = await supabase
-      .from('trips_with_details')
-      .select('*')
-      .eq('traveler_id', targetId)
-      .eq('status', 'active')
-      .order('start_date', { ascending: true })
-      .limit(6)
-    setTrips(data || [])
+    try {
+      const { data, error } = await supabase
+        .from('trips_with_details')
+        .select('*')
+        .eq('traveler_id', targetId)
+        .eq('status', 'active')
+        .order('start_date', { ascending: true })
+        .limit(6)
+      if (error) console.warn('[profile] fetchTrips error:', error.message)
+      setTrips(data || [])
+    } catch (err) {
+      console.warn('[profile] fetchTrips threw:', err)
+      setTrips([])
+    }
   }
 
   async function fetchReviews() {
-    const { data } = await supabase
-      .from('reviews')
-      .select(`*, profiles!reviewer_id(full_name, avatar_url)`)
-      .eq('reviewee_id', targetId)
-      .order('created_at', { ascending: false })
-      .limit(10)
-    setReviews(data || [])
+    try {
+      const { data, error } = await supabase
+        .from('reviews')
+        .select(`*, profiles!reviewer_id(full_name, avatar_url)`)
+        .eq('reviewee_id', targetId)
+        .order('created_at', { ascending: false })
+        .limit(10)
+      if (error) console.warn('[profile] fetchReviews error:', error.message)
+      setReviews(data || [])
+    } catch (err) {
+      console.warn('[profile] fetchReviews threw:', err)
+      setReviews([])
+    }
   }
 
   async function saveProfile() {
