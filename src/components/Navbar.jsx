@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Menu, X, ChevronDown, LogOut, User, LayoutDashboard, PlusCircle } from 'lucide-react'
 import { gsap, ScrollTrigger } from '../lib/animations'
+import logoMark from '../../Logo-assets/project_request_favicon_transparent.png'
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth()
@@ -63,8 +64,15 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/" className="nav-logo flex items-center">
-            <img src="/logo-horizontal.png" alt="Project Request" className="h-9 w-auto" />
+          <Link to="/" className="nav-logo flex items-center gap-2 bg-transparent">
+            <img
+              src={logoMark}
+              alt="Project Request"
+              className="h-10 w-10 object-contain bg-transparent"
+              style={{ background: 'transparent' }}
+              draggable={false}
+            />
+            <span className="font-extrabold text-lg text-gray-900 tracking-tight">Request</span>
           </Link>
 
           {/* Desktop Nav */}

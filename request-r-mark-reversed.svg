@@ -1,0 +1,24 @@
+<svg width="200" height="215" viewBox="0 0 200 215" xmlns="http://www.w3.org/2000/svg">
+  <title>Request (reversed)</title>
+  <rect width="200" height="215" rx="16" fill="#1B2B3B"/>
+  <defs>
+    <linearGradient id="lGW" x1="90" y1="110" x2="157" y2="167" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="white"/>
+      <stop offset="50%"  stop-color="#70D4EC"/>
+      <stop offset="100%" stop-color="#00B4D8"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="28" y="20" width="16" height="165" rx="2" fill="white"/>
+  <path d="M 44,20 L 90,20 C 132,20 148,42 148,65 C 148,88 132,110 90,110 L 44,110 Z"
+        fill="white"/>
+  <path d="M 44,34 L 87,34 C 120,34 134,50 134,65 C 134,80 120,96 87,96 L 44,96 Z"
+        fill="#1B2B3B"/>
+  <path d="M 90,110 C 118,116 148,148 157,167"
+        fill="none" stroke="url(#lGW)" stroke-width="15" stroke-linecap="round"/>
+  <g transform="translate(157, 168)">
+    <circle r="13"             fill="#00B4D8"/>
+    <polygon points="-9,8 9,8 0,26" fill="#00B4D8"/>
+    <circle r="5.5"            fill="#1B2B3B"/>
+  </g>
+</svg>

@@ -102,7 +102,7 @@ export default function HowItWorksScene() {
   return (
     <div
       ref={rootRef}
-      className="relative w-full max-w-3xl mx-auto select-none"
+      className="relative w-full max-w-3xl mx-auto select-none pt-32 pb-36 sm:pt-0 sm:pb-0"
       style={{ minHeight: 320 }}
     >
       {/* ── Characters image ─────────────────────────────────────────── */}
@@ -117,28 +117,26 @@ export default function HowItWorksScene() {
       )}
 
       {/* ── Plane (top, flies left → right) ─────────────────────────── */}
-      <div className="sc-plane absolute z-20 text-2xl" style={{ top: '4%', left: '8%' }}>
+      <div className="sc-plane absolute z-20 text-2xl top-[26%] left-[8%] sm:top-[4%]">
         ✈️
       </div>
 
-      {/* ── Pierre's speech bubble (top-left) ───────────────────────── */}
+      {/* ── Pierre's speech bubble (top-left on desktop, top-center on mobile) ── */}
       <div
-        className="sb-pierre absolute z-20 bg-white rounded-2xl shadow-lg border border-indigo-100 px-3 py-2 text-left"
-        style={{ top: '2%', left: '4%', maxWidth: 188 }}
+        className="sb-pierre absolute z-20 bg-white rounded-2xl shadow-lg border border-indigo-100 px-3 py-2 text-left top-2 left-2 right-2 max-w-none mx-auto sm:top-[2%] sm:left-[4%] sm:right-auto sm:max-w-[188px] sm:mx-0"
       >
         <p className="text-[11px] font-bold text-gray-900 leading-snug">✈️ NYC trip — June 12–19</p>
         <p className="text-[10px] text-gray-500 mt-0.5 leading-snug">Posting on Request…<br/>Who needs something from the US?</p>
-        {/* Tail */}
-        <div className="absolute -bottom-2 left-6 w-3 h-3 bg-white border-r border-b border-indigo-100 rotate-45" />
+        {/* Tail (desktop only) */}
+        <div className="hidden sm:block absolute -bottom-2 left-6 w-3 h-3 bg-white border-r border-b border-indigo-100 rotate-45" />
       </div>
 
-      {/* ── Platform card (center-top) ───────────────────────────────── */}
+      {/* ── Platform card (center) ───────────────────────────────── */}
       <div
-        className="sc-platform absolute z-20 rounded-2xl shadow-xl text-center px-4 py-3"
+        className="sc-platform absolute z-20 rounded-2xl shadow-xl text-center px-4 py-3 top-20 sm:top-[5%] left-1/2 min-w-0 sm:min-w-[170px] max-w-[90%]"
         style={{
-          top: '5%', left: '50%', transform: 'translateX(-50%)',
+          transform: 'translateX(-50%)',
           background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-          minWidth: 170,
         }}
       >
         <p className="text-white text-[11px] font-extrabold tracking-wide">🎯 MATCH FOUND</p>
@@ -148,58 +146,53 @@ export default function HowItWorksScene() {
         </div>
       </div>
 
-      {/* ── Sophie's speech bubble (top-right) ──────────────────────── */}
+      {/* ── Sophie's speech bubble (top-right on desktop, top-center on mobile) ── */}
       <div
-        className="sb-sophie absolute z-20 bg-white rounded-2xl shadow-lg border border-amber-100 px-3 py-2 text-right"
-        style={{ top: '2%', right: '4%', maxWidth: 188 }}
+        className="sb-sophie absolute z-20 bg-white rounded-2xl shadow-lg border border-amber-100 px-3 py-2 text-right top-2 left-2 right-2 max-w-none mx-auto sm:top-[2%] sm:right-[4%] sm:left-auto sm:max-w-[188px] sm:mx-0"
       >
         <p className="text-[11px] font-bold text-gray-900 leading-snug">👖 Levi's 501 from NYC!</p>
         <p className="text-[10px] text-gray-500 mt-0.5 leading-snug">Browsing Request for someone<br/>coming from the US… 🔍</p>
-        {/* Tail */}
-        <div className="absolute -bottom-2 right-6 w-3 h-3 bg-white border-r border-b border-amber-100 rotate-45" />
+        {/* Tail (desktop only) */}
+        <div className="hidden sm:block absolute -bottom-2 right-6 w-3 h-3 bg-white border-r border-b border-amber-100 rotate-45" />
       </div>
 
       {/* ── Match pulse ring (center) ────────────────────────────────── */}
       <div
-        className="sc-match absolute z-10 rounded-full"
+        className="sc-match absolute z-10 rounded-full top-[45%] sm:top-[30%] left-1/2"
         style={{
-          top: '30%', left: '50%', transform: 'translateX(-50%)',
+          transform: 'translateX(-50%)',
           width: 100, height: 100,
           background: 'radial-gradient(circle, rgba(99,102,241,0.18) 0%, rgba(124,58,237,0.06) 70%)',
         }}
       />
 
-      {/* ── Pierre notification (bottom-left) ───────────────────────── */}
+      {/* ── Pierre notification (bottom-left desktop, stacked top of bottom padding on mobile) ── */}
       <div
-        className="sc-notif-pierre absolute z-20 rounded-xl shadow-lg px-3 py-2"
+        className="sc-notif-pierre absolute z-20 rounded-xl shadow-lg px-3 py-2 bottom-20 left-2 right-2 sm:bottom-[8%] sm:left-[3%] sm:right-auto min-w-0 sm:min-w-[160px]"
         style={{
-          bottom: '8%', left: '3%',
           background: 'linear-gradient(135deg, #4f46e5, #6366f1)',
-          minWidth: 160,
         }}
       >
         <p className="text-white text-[10.5px] font-bold">🎉 Request accepted!</p>
         <p className="text-indigo-200 text-[9.5px] mt-0.5">Sophie wants Levi's 501s</p>
       </div>
 
-      {/* ── Sophie notification (bottom-right) ──────────────────────── */}
+      {/* ── Sophie notification (bottom-right desktop, stacked bottom on mobile) ── */}
       <div
-        className="sc-notif-sophie absolute z-20 rounded-xl shadow-lg px-3 py-2 text-right"
+        className="sc-notif-sophie absolute z-20 rounded-xl shadow-lg px-3 py-2 text-right bottom-2 left-2 right-2 sm:bottom-[8%] sm:right-[3%] sm:left-auto min-w-0 sm:min-w-[160px]"
         style={{
-          bottom: '8%', right: '3%',
           background: 'linear-gradient(135deg, #d97706, #f59e0b)',
-          minWidth: 160,
         }}
       >
         <p className="text-white text-[10.5px] font-bold">✅ Pierre is bringing them!</p>
         <p className="text-amber-100 text-[9.5px] mt-0.5">Levi's 501s · arriving June 19</p>
       </div>
 
-      {/* ── Location labels ──────────────────────────────────────────── */}
-      <div className="absolute bottom-1 left-[13%] z-20">
+      {/* ── Location labels (desktop only — they overlap notif stack on mobile) ── */}
+      <div className="hidden sm:block absolute bottom-1 left-[13%] z-20">
         <span className="text-[10px] font-semibold text-indigo-400 bg-indigo-50 px-2 py-0.5 rounded-full">🇫🇷 Paris</span>
       </div>
-      <div className="absolute bottom-1 right-[13%] z-20">
+      <div className="hidden sm:block absolute bottom-1 right-[13%] z-20">
         <span className="text-[10px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">🇫🇷 Paris</span>
       </div>
     </div>

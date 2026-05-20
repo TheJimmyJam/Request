@@ -4,6 +4,7 @@ import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Package } fro
 import { gsap, ScrollTrigger } from '../lib/animations'
 import HowItWorksScene from '../components/HowItWorksScene'
 import DestinationsMarquee from '../components/DestinationsMarquee'
+import heroLogo from '../../Logo-assets/project_request_transparent.png'
 
 const HOW_IT_WORKS = [
   {
@@ -63,10 +64,22 @@ export default function Landing() {
       // ── Hero entrance timeline ──────────────────────────────────────────
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
       tl.from('.hero-badge',   { y: -24, opacity: 0, duration: 0.55 })
-        .from('.hero-heading', { y: 60,  opacity: 0, duration: 0.9 },  '-=0.2')
-        .from('.hero-sub',     { y: 40,  opacity: 0, duration: 0.7 },  '-=0.55')
+        .from('.hero-logo',    { y: 30,  opacity: 0, scale: 0.85, duration: 0.9, ease: 'back.out(1.4)' }, '-=0.2')
+        .from('.hero-tagline', { y: 30,  opacity: 0, duration: 0.7 }, '-=0.5')
+        .from('.hero-sub',     { y: 40,  opacity: 0, duration: 0.7 }, '-=0.55')
         .from('.hero-cta-btn', { y: 28,  opacity: 0, duration: 0.55, stagger: 0.12 }, '-=0.45')
         .from('.hero-stat',    { y: 20,  opacity: 0, duration: 0.5,  stagger: 0.1  }, '-=0.35')
+
+      // ── Periodic Y-axis spin on the hero logo ───────────────────────────
+      gsap.set('.hero-logo', { transformPerspective: 800, transformStyle: 'preserve-3d' })
+      gsap.to('.hero-logo', {
+        rotationY: '+=360',
+        duration: 2.2,
+        ease: 'power2.inOut',
+        repeat: -1,
+        repeatDelay: 6,    // pause between spins
+        delay: 3,          // first spin starts 3s after load
+      })
 
       // ── Floating orbs subtle parallax ──────────────────────────────────
       gsap.to('.hero-orb-top', {
@@ -133,23 +146,36 @@ export default function Landing() {
         <div className="hero-orb-top absolute top-0 right-0 w-[600px] h-[600px] bg-brand-700 rounded-full opacity-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
         <div className="hero-orb-bot absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold-500 rounded-full opacity-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-          <div className="max-w-3xl">
-            <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-medium mb-6">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+          <div className="flex flex-col items-center text-center">
+            <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-medium mb-8">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               Live Trips Available Now
             </div>
-            <h1 className="hero-heading text-5xl sm:text-6xl font-extrabold leading-tight mb-6">
-              The Platform to{' '}
-              <span className="text-gold-400">Request Anything</span>{' '}
-              from Anywhere
+
+            {/* Main logo */}
+            <img
+              src={heroLogo}
+              alt="Project Request"
+              className="hero-logo w-64 sm:w-80 md:w-96 h-auto object-contain mb-6 drop-shadow-2xl"
+              style={{ background: 'transparent', willChange: 'transform' }}
+              draggable={false}
+            />
+
+            {/* Tagline (was the H1) */}
+            <h1 className="hero-tagline text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white mb-6">
+              The platform to{' '}
+              <span className="text-gold-400">request anything</span>{' '}
+              from anywhere.
             </h1>
-            <p className="hero-sub text-xl text-brand-200 mb-10 max-w-2xl leading-relaxed">
+
+            <p className="hero-sub text-lg sm:text-xl text-brand-200 mb-10 max-w-2xl leading-relaxed">
               Connect with travelers heading to your dream destination and ask them to bring back
               anything — rare spirits, artisan goods, limited editions. Skip the import fees.
               Get the real thing.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/trips" className="hero-cta-btn btn-primary bg-gold-500 hover:bg-gold-600 text-gray-900 text-base px-7 py-3.5 font-bold">
                 Browse Trips
                 <ArrowRight className="w-5 h-5" />
@@ -159,13 +185,13 @@ export default function Landing() {
               </Link>
             </div>
 
-            <div className="mt-12 flex flex-wrap gap-6">
+            <div className="mt-12 flex flex-wrap gap-x-10 gap-y-6 justify-center">
               {[
                 ['500+', 'Active Trips'],
                 ['2,400+', 'Items Delivered'],
                 ['98%', 'Satisfaction Rate'],
               ].map(([num, label]) => (
-                <div key={label} className="hero-stat">
+                <div key={label} className="hero-stat text-center">
                   <p className="text-3xl font-extrabold text-white">{num}</p>
                   <p className="text-brand-300 text-sm">{label}</p>
                 </div>

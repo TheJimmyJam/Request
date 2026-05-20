@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 720" width="700" height="720" fill="none">
+  <defs>
+    <marker id="arr" viewBox="0 0 8 8" refX="0.5" refY="4"
+            markerWidth="2.4" markerHeight="2.4" orient="auto-start-reverse"
+            markerUnits="strokeWidth">
+      <path d="M 0 0 L 8 4 L 0 8 Z" fill="currentColor"/>
+    </marker>
+  </defs>
+
+  <!-- Icon (centered top) -->
+  <g color="#000000" stroke="currentColor" stroke-width="40"
+     stroke-linejoin="round" stroke-linecap="butt" transform="translate(205, 30)">
+    <path d="M 40 40 L 75 75
+             C 110 105, 200 30, 230 95
+             C 250 160, 150 175, 130 175
+             L 130 305"
+          marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <path d="M 150 180 L 260 305" marker-end="url(#arr)"/>
+  </g>
+
+  <!-- Wordmark + tagline (centered) -->
+  <text x="350" y="560" text-anchor="middle"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-weight="700" font-size="170" fill="#000000" letter-spacing="-6">Request</text>
+  <text x="350" y="620" text-anchor="middle"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-weight="400" font-size="38" fill="#9AA0A6">Anything from Anywhere</text>
+</svg>
