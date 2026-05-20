@@ -37,7 +37,8 @@ export default function Navbar() {
       gsap.set('.nav-logo-img', { transformOrigin: 'center center' })
       gsap.set('.nav-logo-halo', { transformOrigin: 'center center', scale: 0.6, opacity: 0 })
 
-      const pulse = gsap.timeline({ repeat: -1, repeatDelay: 3.8, delay: 2.5 })
+      // Pulse 3 times total then stop (repeat: 2 = 1 initial play + 2 repeats)
+      const pulse = gsap.timeline({ repeat: 2, repeatDelay: 3.8, delay: 2.5 })
       pulse
         .to('.nav-logo-img', { scale: 1.3, duration: 0.55, ease: 'power2.out' }, 0)
         .to('.nav-logo-halo', { opacity: 0.9, scale: 1.15, duration: 0.55, ease: 'power2.out' }, 0)
