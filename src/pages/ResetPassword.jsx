@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import toast from 'react-hot-toast'
-import { Lock, Eye, EyeOff, Globe } from 'lucide-react'
+import { Lock, Eye, EyeOff } from 'lucide-react'
+import stylizedR from '../../Logo-assets/stylized_R_clean.png'
 
 /**
  * ResetPassword — landing page for the password-reset email link.
@@ -70,11 +71,15 @@ export default function ResetPassword() {
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-gray-50 py-12 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-600 shadow-lg mb-4">
-            <Globe className="w-6 h-6 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">Set a new password</h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <img
+            src={stylizedR}
+            alt="Request"
+            className="mx-auto h-16 w-auto object-contain mb-4"
+            style={{ background: 'transparent' }}
+            draggable={false}
+          />
+          <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wider">Set a new password</h1>
+          <p className="text-gray-500 mt-1 text-sm uppercase tracking-wider">
             Choose a fresh password for your Request account.
           </p>
         </div>
