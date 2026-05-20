@@ -69,6 +69,24 @@ export default function Landing() {
         .from('.hero-cta-btn', { y: 28,  opacity: 0, duration: 0.55, stagger: 0.12 }, '-=0.45')
         .from('.hero-stat',    { y: 20,  opacity: 0, duration: 0.5,  stagger: 0.1  }, '-=0.35')
 
+      // ── Hero stats count-up (0 → target) ────────────────────────────────
+      const numEls = rootRef.current?.querySelectorAll('.hero-stat-number') || []
+      numEls.forEach((el, i) => {
+        const target = parseInt(el.dataset.target, 10)
+        const fmt = el.dataset.format
+        const counter = { val: 0 }
+        gsap.to(counter, {
+          val: target,
+          duration: 1.8,
+          ease: 'power2.out',
+          delay: 1.4 + i * 0.15, // fires shortly after the .hero-stat entrance finishes
+          onUpdate: () => {
+            const n = Math.floor(counter.val)
+            el.textContent = fmt === 'comma' ? n.toLocaleString() : String(n)
+          },
+        })
+      })
+
       // ── Periodic Y-axis spin on the hero logo ───────────────────────────
       gsap.set('.hero-logo', { transformPerspective: 800, transformStyle: 'preserve-3d' })
       gsap.to('.hero-logo', {
@@ -240,13 +258,20 @@ export default function Landing() {
 
             <div className="mt-4 flex flex-wrap gap-x-8 gap-y-3 justify-center">
               {[
-                ['500+', 'Active Trips'],
-                ['2,400+', 'Items Delivered'],
-                ['98%', 'Satisfaction Rate'],
-              ].map(([num, label]) => (
-                <div key={label} className="hero-stat text-center">
-                  <p className="text-xl font-extrabold text-white leading-none">{num}</p>
-                  <p className="text-brand-300 text-xs mt-0.5">{label}</p>
+                { target: 500,  suffix: '+', label: 'Active Trips',      format: 'plain' },
+                { target: 2400, suffix: '+', label: 'Items Delivered',   format: 'comma' },
+                { target: 98,   suffix: '%', label: 'Satisfaction Rate', format: 'plain' },
+              ].map((stat) => (
+                <div key={stat.label} className="hero-stat text-center">
+                  <p className="text-xl font-extrabold text-white leading-none tabular-nums">
+                    <span
+                      className="hero-stat-number"
+                      data-target={stat.target}
+                      data-format={stat.format}
+                    >0</span>
+                    <span>{stat.suffix}</span>
+                  </p>
+                  <p className="text-brand-300 text-xs mt-0.5">{stat.label}</p>
                 </div>
               ))}
             </div>
