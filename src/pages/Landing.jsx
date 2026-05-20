@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Package } from 'lucide-react'
 import { gsap, ScrollTrigger } from '../lib/animations'
-import HowItWorksScene from '../components/HowItWorksScene'
 import DestinationsMarquee from '../components/DestinationsMarquee'
 import heroLogo from '../../Logo-assets/stylized_R_clean.png'
 
@@ -95,10 +94,6 @@ export default function Landing() {
       gsap.from('.how-heading', {
         y: 30, opacity: 0, duration: 0.7, ease: 'power2.out',
         scrollTrigger: { trigger: '.how-section', start: 'top 82%', once: true },
-      })
-      gsap.from('.how-step', {
-        y: 45, opacity: 0, duration: 0.65, ease: 'power2.out',
-        scrollTrigger: { trigger: '.how-section', start: 'top 78%', once: true },
       })
 
       // Slow staggered slide-in from the right for the 4 step KPI cards
@@ -262,16 +257,11 @@ export default function Landing() {
       {/* How It Works */}
       <section className="how-section py-20 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="how-heading text-center mb-10">
+          <div className="how-heading text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How Request Works</h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-              Pierre is heading to NYC and Sophie needs Levi's. Watch the magic happen.
+              Four simple steps from posted trip to delivered item.
             </p>
-          </div>
-
-          {/* Animated scene */}
-          <div className="how-step bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 mb-12 border border-indigo-100">
-            <HowItWorksScene />
           </div>
 
           {/* Step KPI cards */}
