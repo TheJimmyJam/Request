@@ -105,16 +105,8 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav (dashboard only — Browse Trips moved to auth area) */}
           <div className="hidden md:flex items-center gap-1">
-            <Link
-              to="/trips"
-              className={`nav-link px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive('/trips') ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-              }`}
-            >
-              Browse Trips
-            </Link>
             {user && (
               <Link
                 to="/dashboard"
@@ -129,6 +121,14 @@ export default function Navbar() {
 
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center gap-3">
+            <Link
+              to="/trips"
+              className={`nav-auth-item px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive('/trips') ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+              }`}
+            >
+              Browse Trips
+            </Link>
             {user ? (
               <>
                 <Link
