@@ -106,9 +106,9 @@ export default function Landing() {
       gsap.to('.how-step-card', {
         xPercent: 0,
         opacity: 1,
-        duration: 1.1,
+        duration: 1.43,   // 30% slower than 1.1s
         ease: 'power3.out',
-        stagger: 0.45,
+        stagger: 0.585,   // 30% slower than 0.45s
         scrollTrigger: { trigger: '.how-step-card', start: 'top 85%', once: true },
       })
 
