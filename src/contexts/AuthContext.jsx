@@ -67,6 +67,18 @@ export function AuthProvider({ children }) {
     setProfile(null)
   }
 
+  // Email a "set a new password" link. User clicks it → lands on /auth/reset-password
+  async function resetPasswordForEmail(email) {
+    return supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    })
+  }
+
+  // Update password for the currently authenticated session (used after the user clicks the reset link)
+  async function updatePassword(newPassword) {
+    return supabase.auth.updateUser({ password: newPassword })
+  }
+
   async function updateProfile(updates) {
     const { data, error } = await supabase
       .from('profiles')
@@ -87,6 +99,8 @@ export function AuthProvider({ children }) {
       signUpWithEmail,
       signInWithGoogle,
       signOut,
+      resetPasswordForEmail,
+      updatePassword,
       updateProfile,
     }}>
       {children}

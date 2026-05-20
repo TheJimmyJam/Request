@@ -10,6 +10,7 @@ import TripDetail from './pages/TripDetail'
 import CreateTrip from './pages/CreateTrip'
 import RequestDetail from './pages/RequestDetail'
 import Profile from './pages/Profile'
+import ResetPassword from './pages/ResetPassword'
 import footerWordmark from '../Logo-assets/request_wordmark_clean.png'
 
 function ProtectedRoute({ children }) {
@@ -41,8 +42,9 @@ export default function App() {
       <main className="flex-1">
         <Routes>
           <Route path="/"             element={<Landing />} />
-          <Route path="/auth"         element={<Auth />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/auth"                 element={<Auth />} />
+          <Route path="/auth/callback"        element={<AuthCallback />} />
+          <Route path="/auth/reset-password"  element={<ResetPassword />} />
           <Route path="/trips"        element={<BrowseTrips />} />
           <Route path="/trips/:id"    element={<TripDetail />} />
 

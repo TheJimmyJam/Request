@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 import { Globe, Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
 
 export default function Auth() {
-  const { user, signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth()
+  const { user, signInWithEmail, signUpWithEmail, signInWithGoogle, resetPasswordForEmail } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -28,11 +28,17 @@ export default function Auth() {
         const { error } = await signInWithEmail(email, password)
         if (error) throw error
         navigate('/dashboard')
-      } else {
+      } else if (tab === 'signup') {
         if (!fullName.trim()) { toast.error('Please enter your name'); return }
         const { error } = await signUpWithEmail(email, password, fullName)
         if (error) throw error
         toast.success('Account created! Check your email to confirm.')
+      } else if (tab === 'forgot') {
+        if (!email.trim()) { toast.error('Enter your email'); return }
+        const { error } = await resetPasswordForEmail(email)
+        if (error) throw error
+        toast.success("Check your inbox — we sent a password reset link.")
+        setTab('signin')
       }
     } catch (err) {
       toast.error(err.message || 'Something went wrong')
@@ -55,34 +61,39 @@ export default function Auth() {
             <Globe className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">
-            {tab === 'signin' ? 'Welcome back' : 'Join Request'}
+            {tab === 'signin' && 'Welcome back'}
+            {tab === 'signup' && 'Join Request'}
+            {tab === 'forgot' && 'Reset your password'}
           </h1>
           <p className="text-gray-500 mt-1 text-sm">
-            {tab === 'signin'
-              ? 'Sign in to your account'
-              : 'Start requesting or posting trips today'}
+            {tab === 'signin' && 'Sign in to your account'}
+            {tab === 'signup' && 'Start requesting or posting trips today'}
+            {tab === 'forgot' && "Enter your email and we'll send you a reset link"}
           </p>
         </div>
 
         <div className="card p-6 shadow-md">
-          {/* Tab switcher */}
-          <div className="flex rounded-lg bg-gray-100 p-1 mb-6">
-            {[['signin', 'Sign In'], ['signup', 'Create Account']].map(([val, label]) => (
-              <button
-                key={val}
-                onClick={() => setTab(val)}
-                className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${
-                  tab === val
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          {/* Tab switcher — hidden in forgot mode */}
+          {tab !== 'forgot' && (
+            <div className="flex rounded-lg bg-gray-100 p-1 mb-6">
+              {[['signin', 'Sign In'], ['signup', 'Create Account']].map(([val, label]) => (
+                <button
+                  key={val}
+                  onClick={() => setTab(val)}
+                  className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${
+                    tab === val
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
 
-          {/* Google OAuth */}
+          {/* Google OAuth — hidden in forgot mode */}
+          {tab !== 'forgot' && (
           <button
             onClick={handleGoogle}
             className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors font-medium text-sm text-gray-700 mb-5"
@@ -95,15 +106,18 @@ export default function Auth() {
             </svg>
             Continue with Google
           </button>
+          )}
 
-          <div className="relative mb-5">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+          {tab !== 'forgot' && (
+            <div className="relative mb-5">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs text-gray-400">
+                <span className="bg-white px-3">or continue with email</span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-xs text-gray-400">
-              <span className="bg-white px-3">or continue with email</span>
-            </div>
-          </div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -139,34 +153,59 @@ export default function Auth() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type={showPass ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="input pl-9 pr-10"
-                  placeholder={tab === 'signup' ? 'Min 8 characters' : '••••••••'}
-                  minLength={tab === 'signup' ? 8 : undefined}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+            {tab !== 'forgot' && (
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-medium text-gray-700">Password</label>
+                  {tab === 'signin' && (
+                    <button
+                      type="button"
+                      onClick={() => setTab('forgot')}
+                      className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                    >
+                      Forgot password?
+                    </button>
+                  )}
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type={showPass ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="input pl-9 pr-10"
+                    placeholder={tab === 'signup' ? 'Min 8 characters' : '••••••••'}
+                    minLength={tab === 'signup' ? 8 : undefined}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPass(!showPass)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <button type="submit" disabled={loading} className="btn-primary w-full py-3 text-base mt-2">
               {loading ? (
                 <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-              ) : tab === 'signin' ? 'Sign In' : 'Create Account'}
+              ) : tab === 'signin' ? 'Sign In'
+                : tab === 'signup' ? 'Create Account'
+                : 'Send Reset Link'}
             </button>
+
+            {tab === 'forgot' && (
+              <button
+                type="button"
+                onClick={() => setTab('signin')}
+                className="block w-full text-center text-sm text-gray-500 hover:text-gray-700 mt-2"
+              >
+                ← Back to sign in
+              </button>
+            )}
           </form>
 
           {tab === 'signup' && (
@@ -179,15 +218,17 @@ export default function Auth() {
           )}
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-4">
-          {tab === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-          <button
-            onClick={() => setTab(tab === 'signin' ? 'signup' : 'signin')}
-            className="text-brand-600 font-semibold hover:text-brand-700"
-          >
-            {tab === 'signin' ? 'Sign Up' : 'Sign In'}
-          </button>
-        </p>
+        {tab !== 'forgot' && (
+          <p className="text-center text-sm text-gray-500 mt-4">
+            {tab === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+            <button
+              onClick={() => setTab(tab === 'signin' ? 'signup' : 'signin')}
+              className="text-brand-600 font-semibold hover:text-brand-700"
+            >
+              {tab === 'signin' ? 'Sign Up' : 'Sign In'}
+            </button>
+          </p>
+        )}
       </div>
     </div>
   )
