@@ -159,7 +159,8 @@ export default function Landing() {
           const els = rootRef.current?.querySelectorAll('.fee-scramble') || []
           els.forEach((el, i) => {
             const target = el.getAttribute('data-target') || el.textContent
-            setTimeout(() => scrambleEl(el, target, 1.0 + i * 0.1), i * 220)
+            // 75% slower: duration 1.0 + i*0.1 → 1.75 + i*0.175; stagger 220ms → 385ms
+            setTimeout(() => scrambleEl(el, target, 1.75 + i * 0.175), i * 385)
           })
         },
       })
