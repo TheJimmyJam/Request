@@ -112,15 +112,56 @@ export default function Landing() {
         scrollTrigger: { trigger: '.how-step-card', start: 'top 85%', once: true },
       })
 
-      // ── Fee KPI cards: slow staggered slide-in from the right ──────────
-      gsap.set('.fee-kpi-card', { xPercent: 120, opacity: 0 })
-      gsap.to('.fee-kpi-card', {
-        xPercent: 0,
-        opacity: 1,
-        duration: 1.1,
-        ease: 'power3.out',
-        stagger: 0.45,
-        scrollTrigger: { trigger: '.fee-section', start: 'top 75%', once: true },
+      // ── Fee Explainer ───────────────────────────────────────────────────
+      gsap.from('.fee-card', {
+        y: 40, opacity: 0, duration: 0.7, ease: 'power2.out',
+        scrollTrigger: { trigger: '.fee-section', start: 'top 82%', once: true },
+      })
+
+      // Scramble the right-column values into place
+      const scrambleChars = '!<>-_\\/[]{}—=+*^?#§$%&@01ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      const scrambleEl = (el, finalText, duration = 1.1) => {
+        const chars = finalText.split('')
+        const totalTicks = Math.max(18, chars.length * 4)
+        let tick = 0
+        const settledIdx = new Array(chars.length).fill(false)
+        const settleAt = chars.map((_, i) =>
+          Math.floor((i / chars.length) * totalTicks * 0.85) + Math.floor(Math.random() * 4)
+        )
+        const interval = (duration * 1000) / totalTicks
+        el.textContent = chars.map(() => scrambleChars[Math.floor(Math.random() * scrambleChars.length)]).join('')
+        const id = setInterval(() => {
+          tick++
+          const out = chars.map((c, i) => {
+            if (settledIdx[i] || c === ' ') {
+              settledIdx[i] = true
+              return c
+            }
+            if (tick >= settleAt[i]) {
+              settledIdx[i] = true
+              return c
+            }
+            return scrambleChars[Math.floor(Math.random() * scrambleChars.length)]
+          })
+          el.textContent = out.join('')
+          if (tick >= totalTicks) {
+            clearInterval(id)
+            el.textContent = finalText
+          }
+        }, interval)
+      }
+
+      ScrollTrigger.create({
+        trigger: '.fee-section',
+        start: 'top 70%',
+        once: true,
+        onEnter: () => {
+          const els = rootRef.current?.querySelectorAll('.fee-scramble') || []
+          els.forEach((el, i) => {
+            const target = el.getAttribute('data-target') || el.textContent
+            setTimeout(() => scrambleEl(el, target, 1.0 + i * 0.1), i * 220)
+          })
+        },
       })
 
       // ── Destinations ────────────────────────────────────────────────────
@@ -256,71 +297,39 @@ export default function Landing() {
       </section>
 
       {/* Fee Explainer */}
-      <section className="fee-section py-16 bg-gray-50 border-y border-gray-100 overflow-hidden">
+      <section className="fee-section py-16 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 text-center">Simple, Transparent Fees</h3>
-          <p className="text-gray-500 text-center mb-10 max-w-xl mx-auto">
-            No hidden charges. You see exactly what you pay before the request is accepted.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
-            {[
-              {
-                label: 'Item Cost',
-                token: 'X',
-                value: 'You set it',
-                desc: "What the traveler pays for your item",
-                accent: 'border-gray-100',
-                valueColor: 'text-gray-900',
-                tokenColor: 'bg-gray-100 text-gray-600',
-              },
-              {
-                label: "Finder's Fee",
-                token: 'Y',
-                value: 'You negotiate',
-                desc: "What you pay the traveler for their effort",
-                accent: 'border-gray-100',
-                valueColor: 'text-gray-900',
-                tokenColor: 'bg-amber-50 text-amber-600',
-              },
-              {
-                label: 'Request Fee',
-                token: '10%',
-                value: 'Auto-calculated',
-                desc: '(X + Y) × 10% — our connection charge',
-                accent: 'border-brand-100',
-                valueColor: 'text-brand-700',
-                tokenColor: 'bg-brand-50 text-brand-600',
-              },
-              {
-                label: 'Total You Pay',
-                token: 'Σ',
-                value: '(X + Y) × 1.10',
-                desc: 'Everything bundled, nothing extra',
-                accent: 'border-gold-200 ring-1 ring-gold-100',
-                valueColor: 'text-brand-900',
-                tokenColor: 'bg-gold-100 text-gold-700',
-              },
-            ].map((card, i) => (
-              <div
-                key={card.label}
-                className={`fee-kpi-card bg-white rounded-2xl border ${card.accent} shadow-sm p-5 flex flex-col h-full`}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs font-semibold tracking-wide text-gray-500 uppercase">
-                    Step {i + 1}
-                  </p>
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${card.tokenColor}`}>
-                    {card.token}
+          <div className="fee-card max-w-2xl mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">Simple, Transparent Fees</h3>
+            <div className="space-y-4">
+              {[
+                { label: 'Item Cost (X)', desc: "What the traveler pays for your item", value: 'You set it', color: 'text-gray-700' },
+                { label: "Finder's Fee (Y)", desc: "What you pay the traveler for their effort", value: 'You negotiate', color: 'text-gray-700' },
+                { label: 'Request Fee (10%)', desc: "(X + Y) × 10% — our connection charge", value: 'Auto-calculated', color: 'text-brand-600 font-semibold' },
+              ].map(row => (
+                <div key={row.label} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">{row.label}</p>
+                    <p className="text-gray-400 text-xs">{row.desc}</p>
+                  </div>
+                  <span
+                    className={`fee-scramble text-sm tabular-nums ${row.color}`}
+                    data-target={row.value}
+                  >
+                    {row.value}
                   </span>
                 </div>
-                <p className="text-sm font-semibold text-gray-700">{card.label}</p>
-                <p className={`text-xl sm:text-2xl font-extrabold mt-1 ${card.valueColor}`}>
-                  {card.value}
-                </p>
-                <p className="text-xs text-gray-400 mt-3 leading-relaxed">{card.desc}</p>
+              ))}
+              <div className="flex items-center justify-between py-3 bg-brand-50 rounded-lg px-4 mt-2">
+                <p className="font-bold text-brand-900 text-sm">Total You Pay</p>
+                <span
+                  className="fee-scramble font-bold text-brand-700 tabular-nums"
+                  data-target="(X + Y) × 1.10"
+                >
+                  (X + Y) × 1.10
+                </span>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
