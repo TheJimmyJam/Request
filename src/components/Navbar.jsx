@@ -32,6 +32,17 @@ export default function Navbar() {
       gsap.from('.nav-auth-item', {
         y: -12, opacity: 0, duration: 0.45, ease: 'power2.out', stagger: 0.1, delay: 0.2,
       })
+
+      // ── Periodic wordmark pulse + halo ──────────────────────────────
+      gsap.set('.nav-logo-img', { transformOrigin: 'center center' })
+      gsap.set('.nav-logo-halo', { transformOrigin: 'center center', scale: 0.6, opacity: 0 })
+
+      const pulse = gsap.timeline({ repeat: -1, repeatDelay: 3.8, delay: 2.5 })
+      pulse
+        .to('.nav-logo-img', { scale: 1.3, duration: 0.55, ease: 'power2.out' }, 0)
+        .to('.nav-logo-halo', { opacity: 0.9, scale: 1.15, duration: 0.55, ease: 'power2.out' }, 0)
+        .to('.nav-logo-img', { scale: 1, duration: 0.7, ease: 'power2.inOut' }, 0.55)
+        .to('.nav-logo-halo', { opacity: 0, scale: 0.6, duration: 0.7, ease: 'power2.inOut' }, 0.55)
     }, navRef)
 
     // Scroll: intensify shadow on scroll
@@ -65,13 +76,32 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link to="/" className="nav-logo flex items-center bg-transparent" aria-label="Request — home">
-            <img
-              src={wordmark}
-              alt="Request"
-              className="h-7 sm:h-8 w-auto object-contain bg-transparent"
-              style={{ background: 'transparent' }}
-              draggable={false}
-            />
+            <span className="relative inline-flex items-center justify-center">
+              {/* Halo (pulses behind the wordmark) */}
+              <span
+                className="nav-logo-halo absolute pointer-events-none"
+                aria-hidden="true"
+                style={{
+                  width: '160%',
+                  height: '220%',
+                  left: '-30%',
+                  top: '-60%',
+                  background:
+                    'radial-gradient(ellipse at center, rgba(99,102,241,0.55) 0%, rgba(99,102,241,0.18) 45%, rgba(99,102,241,0) 70%)',
+                  filter: 'blur(10px)',
+                  opacity: 0,
+                  zIndex: 0,
+                  willChange: 'opacity, transform',
+                }}
+              />
+              <img
+                src={wordmark}
+                alt="Request"
+                className="nav-logo-img relative h-7 sm:h-8 w-auto object-contain bg-transparent"
+                style={{ background: 'transparent', zIndex: 1, willChange: 'transform' }}
+                draggable={false}
+              />
+            </span>
           </Link>
 
           {/* Desktop Nav */}
