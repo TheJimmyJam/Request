@@ -107,6 +107,53 @@ export default function Landing() {
         scrollTrigger: { trigger: '.fee-section', start: 'top 82%', once: true },
       })
 
+      // Scramble the right-column values into place
+      const scrambleChars = '!<>-_\\/[]{}—=+*^?#§$%&@01ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      const scrambleEl = (el, finalText, duration = 1.1) => {
+        const chars = finalText.split('')
+        const totalTicks = Math.max(18, chars.length * 4)
+        let tick = 0
+        const settledIdx = new Array(chars.length).fill(false)
+        const settleAt = chars.map((_, i) =>
+          Math.floor((i / chars.length) * totalTicks * 0.85) + Math.floor(Math.random() * 4)
+        )
+        const interval = (duration * 1000) / totalTicks
+        el.textContent = chars.map(() => scrambleChars[Math.floor(Math.random() * scrambleChars.length)]).join('')
+        const id = setInterval(() => {
+          tick++
+          const out = chars.map((c, i) => {
+            if (settledIdx[i] || c === ' ') {
+              settledIdx[i] = true
+              return c
+            }
+            if (tick >= settleAt[i]) {
+              settledIdx[i] = true
+              return c
+            }
+            return scrambleChars[Math.floor(Math.random() * scrambleChars.length)]
+          })
+          el.textContent = out.join('')
+          if (tick >= totalTicks) {
+            clearInterval(id)
+            el.textContent = finalText
+          }
+        }, interval)
+      }
+
+      ScrollTrigger.create({
+        trigger: '.fee-section',
+        start: 'top 70%',
+        once: true,
+        onEnter: () => {
+          const els = rootRef.current?.querySelectorAll('.fee-scramble') || []
+          els.forEach((el, i) => {
+            const target = el.getAttribute('data-target') || el.textContent
+            // Stagger each row so the scramble cascades
+            setTimeout(() => scrambleEl(el, target, 1.0 + i * 0.1), i * 220)
+          })
+        },
+      })
+
       // ── Destinations ────────────────────────────────────────────────────
       gsap.from('.dest-heading', {
         y: 30, opacity: 0, duration: 0.6, ease: 'power2.out',
@@ -250,12 +297,22 @@ export default function Landing() {
                     <p className="font-semibold text-gray-900 text-sm">{row.label}</p>
                     <p className="text-gray-400 text-xs">{row.desc}</p>
                   </div>
-                  <span className={`text-sm ${row.color}`}>{row.value}</span>
+                  <span
+                    className={`fee-scramble text-sm tabular-nums ${row.color}`}
+                    data-target={row.value}
+                  >
+                    {row.value}
+                  </span>
                 </div>
               ))}
               <div className="flex items-center justify-between py-3 bg-brand-50 rounded-lg px-4 mt-2">
                 <p className="font-bold text-brand-900 text-sm">Total You Pay</p>
-                <span className="font-bold text-brand-700">(X + Y) × 1.10</span>
+                <span
+                  className="fee-scramble font-bold text-brand-700 tabular-nums"
+                  data-target="(X + Y) × 1.10"
+                >
+                  (X + Y) × 1.10
+                </span>
               </div>
             </div>
           </div>
