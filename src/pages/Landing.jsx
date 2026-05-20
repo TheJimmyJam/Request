@@ -97,8 +97,19 @@ export default function Landing() {
         scrollTrigger: { trigger: '.how-section', start: 'top 82%', once: true },
       })
       gsap.from('.how-step', {
-        y: 45, opacity: 0, duration: 0.65, ease: 'power2.out', stagger: 0.13,
+        y: 45, opacity: 0, duration: 0.65, ease: 'power2.out',
         scrollTrigger: { trigger: '.how-section', start: 'top 78%', once: true },
+      })
+
+      // Slow staggered slide-in from the right for the 4 step KPI cards
+      gsap.set('.how-step-card', { xPercent: 120, opacity: 0 })
+      gsap.to('.how-step-card', {
+        xPercent: 0,
+        opacity: 1,
+        duration: 1.1,
+        ease: 'power3.out',
+        stagger: 0.45,
+        scrollTrigger: { trigger: '.how-step-card', start: 'top 85%', once: true },
       })
 
       // ── Fee KPI cards: slow staggered slide-in from the right ──────────
@@ -207,7 +218,7 @@ export default function Landing() {
       </section>
 
       {/* How It Works */}
-      <section className="how-section py-20 bg-white">
+      <section className="how-section py-20 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="how-heading text-center mb-10">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How Request Works</h2>
@@ -221,17 +232,22 @@ export default function Landing() {
             <HowItWorksScene />
           </div>
 
-          {/* Steps below scene */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Step KPI cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {HOW_IT_WORKS.map((step, i) => (
-              <div key={step.title} className="how-step flex flex-col items-start gap-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${step.color}`}>
-                  <step.icon className="w-6 h-6" />
+              <div
+                key={step.title}
+                className="how-step-card bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col h-full hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${step.color}`}>
+                    <step.icon className="w-6 h-6" />
+                  </div>
+                  <span className="text-3xl font-extrabold text-gray-100 leading-none">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl font-extrabold text-gray-200">{String(i+1).padStart(2,'0')}</span>
-                </div>
-                <h3 className="text-lg font-bold text-gray-900">{step.title}</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
