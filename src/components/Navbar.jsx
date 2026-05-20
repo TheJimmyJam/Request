@@ -105,19 +105,8 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav (dashboard only — Browse Trips moved to auth area) */}
-          <div className="hidden md:flex items-center gap-1">
-            {user && (
-              <Link
-                to="/dashboard"
-                className={`nav-link px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive('/dashboard') ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                Dashboard
-              </Link>
-            )}
-          </div>
+          {/* Desktop Nav — empty middle slot (links live on the right) */}
+          <div className="hidden md:flex items-center gap-1" />
 
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center gap-3">
@@ -129,6 +118,16 @@ export default function Navbar() {
             >
               Browse Trips
             </Link>
+            {user && (
+              <Link
+                to="/dashboard"
+                className={`nav-auth-item px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  isActive('/dashboard') ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                Dashboard
+              </Link>
+            )}
             {user ? (
               <>
                 <Link
