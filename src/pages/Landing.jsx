@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Package } from 'lucide-react'
 import { gsap, ScrollTrigger } from '../lib/animations'
 import DestinationsMarquee from '../components/DestinationsMarquee'
-import heroLogo from '../../Logo-assets/request_wordmark_clean.png'
+import heroLogo from '../../Logo-assets/stylized_R_clean.png'
 import inlineWordmark from '../../Logo-assets/request_wordmark_clean.png'
 
 const HOW_IT_WORKS = [
@@ -225,11 +225,11 @@ export default function Landing() {
               Live Trips Available Now
             </div>
 
-            {/* Main logo (wordmark) */}
+            {/* Main logo (stylized R) */}
             <img
               src={heroLogo}
               alt="Request"
-              className="hero-logo w-72 sm:w-80 md:w-96 h-auto object-contain mb-2 drop-shadow-2xl"
+              className="hero-logo w-44 sm:w-52 md:w-60 h-auto object-contain mb-1 drop-shadow-2xl"
               style={{ background: 'transparent', willChange: 'transform' }}
               draggable={false}
             />
