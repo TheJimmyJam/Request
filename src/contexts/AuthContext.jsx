@@ -9,37 +9,57 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Hard timeout so a slow/failed network never traps the user on the spinner
+    const failsafe = setTimeout(() => setLoading(false), 6000)
+
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      if (session?.user) fetchProfile(session.user.id)
-      else setLoading(false)
-    })
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          fetchProfile(session.user.id).finally(() => setLoading(false))
+        } else {
+          setLoading(false)
+        }
+      })
+      .catch(() => setLoading(false))
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setUser(session?.user ?? null)
         if (session?.user) {
-          await fetchProfile(session.user.id)
+          try { await fetchProfile(session.user.id) } catch { /* swallow */ }
         } else {
           setProfile(null)
-          setLoading(false)
         }
+        setLoading(false)
       }
     )
 
-    return () => subscription.unsubscribe()
+    return () => {
+      clearTimeout(failsafe)
+      subscription.unsubscribe()
+    }
   }, [])
 
   async function fetchProfile(userId) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    setProfile(data)
-    setLoading(false)
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle()
+      if (error) {
+        console.warn('[auth] fetchProfile error:', error.message)
+        setProfile(null)
+      } else {
+        setProfile(data ?? null)
+      }
+    } catch (err) {
+      console.warn('[auth] fetchProfile threw:', err)
+      setProfile(null)
+    }
   }
 
   async function signInWithEmail(email, password) {
