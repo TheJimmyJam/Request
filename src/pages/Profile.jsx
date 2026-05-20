@@ -15,10 +15,12 @@ export default function Profile() {
   const isOwnProfile  = !id || id === user?.id
   const targetId      = id || user?.id
 
-  const [profileData, setProfileData] = useState(null)
+  // For own profile, prime with the cached profile from AuthContext so the page
+  // renders instantly even if the REST fetch hiccups on cold start
+  const [profileData, setProfileData] = useState(isOwnProfile ? (profile ?? null) : null)
   const [trips, setTrips]             = useState([])
   const [reviews, setReviews]         = useState([])
-  const [loading, setLoading]         = useState(true)
+  const [loading, setLoading]         = useState(!isOwnProfile || !profile)
   const [editing, setEditing]         = useState(false)
   const [saving, setSaving]           = useState(false)
 
@@ -70,10 +72,11 @@ export default function Profile() {
         .eq('id', targetId)
         .maybeSingle()
       if (error) console.warn('[profile] fetchProfile error:', error.message)
-      setProfileData(data ?? null)
+      // Only overwrite if we actually got data — preserves the cached profile
+      // from AuthContext when the REST fetch hiccups
+      if (data) setProfileData(data)
     } catch (err) {
       console.warn('[profile] fetchProfile threw:', err)
-      setProfileData(null)
     }
   }
 
