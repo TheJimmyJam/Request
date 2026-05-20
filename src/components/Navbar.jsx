@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { Menu, X, ChevronDown, LogOut, User, LayoutDashboard, PlusCircle } from 'lucide-react'
 import { gsap, ScrollTrigger } from '../lib/animations'
-import logoMark from '../../Logo-assets/project_request_favicon_transparent.png'
+import logoMark from '../../Logo-assets/project_request_favicon_clean.png'
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth()

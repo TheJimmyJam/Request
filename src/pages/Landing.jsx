@@ -4,7 +4,7 @@ import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Package } fro
 import { gsap, ScrollTrigger } from '../lib/animations'
 import HowItWorksScene from '../components/HowItWorksScene'
 import DestinationsMarquee from '../components/DestinationsMarquee'
-import heroLogo from '../../Logo-assets/project_request_transparent.png'
+import heroLogo from '../../Logo-assets/project_request_transparent_clean.png'
 
 const HOW_IT_WORKS = [
   {
