@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import TripCard from '../components/TripCard'
-import { PlusCircle, Package, Globe, Loader2, InboxIcon } from 'lucide-react'
+import { PlusCircle, Package, Globe, Loader2, InboxIcon, Trash2 } from 'lucide-react'
 import { format } from 'date-fns'
 import { gsap } from '../lib/animations'
+import toast from 'react-hot-toast'
 
 const STATUS_COLORS = {
   pending:   'status-pending',
@@ -87,6 +88,36 @@ export default function Dashboard() {
 
   const pendingCount  = myRequests.filter(r => r.status === 'pending').length
   const acceptedCount = myRequests.filter(r => r.status === 'accepted').length
+
+  const [deletingId, setDeletingId] = useState(null)
+
+  async function deleteRequest(req) {
+    const ok = window.confirm(
+      `Delete your request for "${req.item_name}"? This can't be undone.`
+    )
+    if (!ok) return
+
+    setDeletingId(req.id)
+    // Optimistic remove from list
+    setMyRequests(prev => prev.filter(r => r.id !== req.id))
+
+    const { error } = await supabase
+      .from('requests')
+      .delete()
+      .eq('id', req.id)
+      .eq('requester_id', user.id)
+      .eq('status', 'pending')
+
+    setDeletingId(null)
+
+    if (error) {
+      toast.error(`Couldn't delete: ${error.message}`)
+      // Re-fetch to restore the row if the optimistic remove was wrong
+      fetchMyRequests()
+    } else {
+      toast.success('Request deleted')
+    }
+  }
 
   return (
     <div ref={rootRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -191,6 +222,19 @@ export default function Dashboard() {
                     <Link to={`/requests/${req.id}`} className="btn-secondary text-sm py-2 px-3">
                       View
                     </Link>
+                    {req.status === 'pending' && (
+                      <button
+                        onClick={() => deleteRequest(req)}
+                        disabled={deletingId === req.id}
+                        className="text-sm py-2 px-3 rounded-lg text-red-600 hover:bg-red-50 border border-transparent hover:border-red-100 transition-colors disabled:opacity-50"
+                        title="Delete this pending request"
+                        aria-label="Delete request"
+                      >
+                        {deletingId === req.id
+                          ? <Loader2 className="w-4 h-4 animate-spin" />
+                          : <Trash2 className="w-4 h-4" />}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
