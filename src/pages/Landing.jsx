@@ -146,9 +146,9 @@ export default function Landing() {
         <div className="hero-orb-top absolute top-0 right-0 w-[600px] h-[600px] bg-brand-700 rounded-full opacity-10 translate-x-1/3 -translate-y-1/3 pointer-events-none" />
         <div className="hero-orb-bot absolute bottom-0 left-0 w-[400px] h-[400px] bg-gold-500 rounded-full opacity-10 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
           <div className="flex flex-col items-center text-center">
-            <div className="hero-badge inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-sm font-medium mb-4">
+            <div className="hero-badge inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-medium mb-2">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               Live Trips Available Now
             </div>
@@ -157,43 +157,43 @@ export default function Landing() {
             <img
               src={heroLogo}
               alt="Project Request"
-              className="hero-logo w-56 sm:w-64 md:w-72 h-auto object-contain mb-2 drop-shadow-2xl"
+              className="hero-logo w-44 sm:w-52 md:w-60 h-auto object-contain mb-1 drop-shadow-2xl"
               style={{ background: 'transparent', willChange: 'transform' }}
               draggable={false}
             />
 
             {/* Tagline (was the H1) */}
-            <h1 className="hero-tagline text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-white mb-3">
+            <h1 className="hero-tagline text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight text-white mb-2">
               The platform to{' '}
               <span className="text-gold-400">request anything</span>{' '}
               from anywhere.
             </h1>
 
-            <p className="hero-sub text-base sm:text-lg text-brand-200 mb-6 max-w-2xl leading-relaxed">
+            <p className="hero-sub text-sm sm:text-base text-brand-200 mb-4 max-w-2xl leading-relaxed">
               Connect with travelers heading to your dream destination and ask them to bring back
               anything — rare spirits, artisan goods, limited editions. Skip the import fees.
               Get the real thing.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/trips" className="hero-cta-btn btn-primary bg-gold-500 hover:bg-gold-600 text-gray-900 text-base px-7 py-3 font-bold">
+              <Link to="/trips" className="hero-cta-btn btn-primary bg-gold-500 hover:bg-gold-600 text-gray-900 text-sm px-6 py-2.5 font-bold">
                 Browse Trips
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/auth?tab=signup" className="hero-cta-btn btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/20 text-base px-7 py-3">
+              <Link to="/auth?tab=signup" className="hero-cta-btn btn-secondary bg-white/10 hover:bg-white/20 text-white border-white/20 text-sm px-6 py-2.5">
                 Post Your Trip
               </Link>
             </div>
 
-            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-4 justify-center">
+            <div className="mt-4 flex flex-wrap gap-x-8 gap-y-3 justify-center">
               {[
                 ['500+', 'Active Trips'],
                 ['2,400+', 'Items Delivered'],
                 ['98%', 'Satisfaction Rate'],
               ].map(([num, label]) => (
                 <div key={label} className="hero-stat text-center">
-                  <p className="text-2xl font-extrabold text-white">{num}</p>
-                  <p className="text-brand-300 text-xs">{label}</p>
+                  <p className="text-xl font-extrabold text-white leading-none">{num}</p>
+                  <p className="text-brand-300 text-xs mt-0.5">{label}</p>
                 </div>
               ))}
             </div>
