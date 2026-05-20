@@ -88,15 +88,15 @@ export default function Landing() {
         })
       })
 
-      // ── Periodic Y-axis spin on the hero logo ───────────────────────────
+      // ── Continuous Y-axis spin on the hero logo (non-stop) ──────────────
       gsap.set('.hero-logo', { transformPerspective: 800, transformStyle: 'preserve-3d' })
       gsap.to('.hero-logo', {
         rotationY: '+=360',
-        duration: 2.2,
-        ease: 'power2.inOut',
+        duration: 4.5,    // slower so continuous spin feels smooth, not dizzying
+        ease: 'none',     // linear — no easing pulse between rotations
         repeat: -1,
-        repeatDelay: 6,    // pause between spins
-        delay: 3,          // first spin starts 3s after load
+        repeatDelay: 0,   // no pause — rolls straight into next rotation
+        delay: 2.5,       // brief entrance delay so it doesn't fight the hero animation
       })
 
       // ── Floating orbs subtle parallax ──────────────────────────────────
