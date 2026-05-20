@@ -4,6 +4,7 @@ import { Globe, ShoppingBag, DollarSign, Star, ArrowRight, MapPin, Package } fro
 import { gsap, ScrollTrigger } from '../lib/animations'
 import DestinationsMarquee from '../components/DestinationsMarquee'
 import heroLogo from '../../Logo-assets/stylized_R_clean.png'
+import inlineWordmark from '../../Logo-assets/request_wordmark_clean.png'
 
 const HOW_IT_WORKS = [
   {
@@ -283,7 +284,17 @@ export default function Landing() {
       <section className="how-section py-20 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="how-heading text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How Request Works</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center flex-wrap gap-x-3 gap-y-1">
+              <span>How</span>
+              <img
+                src={inlineWordmark}
+                alt="Request"
+                className="inline-block h-8 sm:h-10 w-auto object-contain align-middle"
+                style={{ background: 'transparent' }}
+                draggable={false}
+              />
+              <span>Works</span>
+            </h2>
             <p className="text-lg text-gray-500 max-w-2xl mx-auto">
               Four simple steps from posted trip to delivered item.
             </p>
