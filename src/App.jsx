@@ -10,6 +10,7 @@ import TripDetail from './pages/TripDetail'
 import CreateTrip from './pages/CreateTrip'
 import RequestDetail from './pages/RequestDetail'
 import Profile from './pages/Profile'
+import footerWordmark from '../Logo-assets/request_wordmark_clean.png'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -58,12 +59,15 @@ export default function App() {
       <footer className="bg-white border-t border-gray-100 py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-brand-600 flex items-center justify-center">
-                <span className="text-white text-xs font-bold">R</span>
-              </div>
-              <span className="font-semibold text-gray-900">Request</span>
-              <span className="text-gray-400 text-sm">— The Platform to Request Anything</span>
+            <div className="flex items-center gap-3">
+              <img
+                src={footerWordmark}
+                alt="Request"
+                className="h-6 w-auto object-contain"
+                style={{ background: 'transparent' }}
+                draggable={false}
+              />
+              <span className="text-gray-400 text-sm hidden sm:inline">— The Platform to Request Anything</span>
             </div>
             <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Request. All rights reserved.</p>
           </div>
