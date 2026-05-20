@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
-import { Globe, Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
+import stylizedR from '../../Logo-assets/stylized_R_clean.png'
 
 export default function Auth() {
   const { user, signInWithEmail, signUpWithEmail, signInWithGoogle, resetPasswordForEmail } = useAuth()
@@ -57,15 +58,19 @@ export default function Auth() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-600 shadow-lg mb-4">
-            <Globe className="w-6 h-6 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <img
+            src={stylizedR}
+            alt="Request"
+            className="mx-auto h-16 w-auto object-contain mb-4"
+            style={{ background: 'transparent' }}
+            draggable={false}
+          />
+          <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-wider">
             {tab === 'signin' && 'Welcome back'}
             {tab === 'signup' && 'Join Request'}
             {tab === 'forgot' && 'Reset your password'}
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-gray-500 mt-1 text-sm uppercase tracking-wider">
             {tab === 'signin' && 'Sign in to your account'}
             {tab === 'signup' && 'Start requesting or posting trips today'}
             {tab === 'forgot' && "Enter your email and we'll send you a reset link"}
