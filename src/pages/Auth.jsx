@@ -5,6 +5,8 @@ import toast from 'react-hot-toast'
 import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react'
 import stylizedR from '../../Logo-assets/stylized_R_clean.png'
 
+const expandJimmy = v => (v.trim().toLowerCase() === 'jimmy' ? 'jimmy@cannoncodeconnect.com' : v)
+
 export default function Auth() {
   const { user, signInWithEmail, signUpWithEmail, signInWithGoogle, resetPasswordForEmail } = useAuth()
   const navigate = useNavigate()
@@ -26,7 +28,9 @@ export default function Auth() {
     setLoading(true)
     try {
       if (tab === 'signin') {
-        const { error } = await signInWithEmail(email, password)
+        const signInEmail = expandJimmy(email)
+        if (signInEmail !== email) setEmail(signInEmail)
+        const { error } = await signInWithEmail(signInEmail, password)
         if (error) throw error
         navigate('/dashboard')
       } else if (tab === 'signup') {
@@ -148,7 +152,11 @@ export default function Auth() {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
-                  type="email"
+                  type={tab === 'signin' ? 'text' : 'email'}
+                  inputMode="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="input pl-9"
